@@ -31,10 +31,10 @@ importers:
         specifier: ^10.4.14
         version: 10.4.20(postcss@8.5.1)
       eslint:
-        specifier: ^8.x.x
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-plugin-vue:
-        specifier: ^9.x.x
+        specifier: ^9.32.0
         version: 9.32.0(eslint@8.57.1)
       postcss:
         specifier: ^8.4.23
