@@ -6,8 +6,8 @@
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold">How many people?</h2>
         <button
-          @click="$emit('close')"
           class="text-gray-400 hover:text-gray-600"
+          @click="$emit('close')"
         >
           ×
         </button>
@@ -19,13 +19,13 @@
       </p>
       <div class="flex items-center gap-2 mb-4">
         <input
-          type="checkbox"
           v-model="isTestMode"
+          type="checkbox"
           class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
         />
-        <label class="text-sm text-gray-600"
-          >Enable testing mode (allows less than 20 people)</label
-        >
+        <label class="text-sm text-gray-600">
+          Enable testing mode (allows less than 20 people)
+        </label>
       </div>
       <input
         v-model="numberOfPeople"
@@ -37,14 +37,14 @@
       />
       <div class="flex justify-end gap-2">
         <button
-          @click="$emit('close')"
           class="px-4 py-2 text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
+          @click="$emit('close')"
         >
           Cancel
         </button>
         <button
-          @click="startGame"
           class="px-4 py-2 text-white bg-orange-500 rounded hover:bg-orange-600"
+          @click="startGame"
         >
           Start
         </button>

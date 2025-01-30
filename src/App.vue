@@ -8,8 +8,8 @@
             Time: {{ formatTime(timer) }}
           </div>
           <button
-            @click="isGameStarted ? resetGame() : (showModal = true)"
             class="px-4 py-2 text-white transition-colors bg-orange-500 rounded-lg hover:bg-orange-600"
+            @click="isGameStarted ? resetGame() : (showModal = true)"
           >
             {{ isGameStarted ? "Reset" : "Start sorting!" }}
           </button>
@@ -190,7 +190,9 @@ input[type="checkbox"]:checked {
 input[type="checkbox"]:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #f97316;
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 4px #f97316;
 }
 
 @keyframes bounce-once {

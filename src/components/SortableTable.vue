@@ -37,17 +37,17 @@
               'bg-blue-50': selectedPeople.has(person.id),
             }"
             draggable="true"
+            class="border-t cursor-move hover:bg-gray-50"
             @dragstart="onDragStart($event, person)"
             @dragover="onDragOver($event)"
             @drop="onDrop($event, person)"
-            class="border-t cursor-move hover:bg-gray-50"
           >
             <td class="w-10 px-4 py-3">
               <input
                 type="checkbox"
                 :checked="selectedPeople.has(person.id)"
-                @change="$emit('toggle-selection', person.id)"
                 class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
+                @change="$emit('toggle-selection', person.id)"
               />
             </td>
             <td class="px-4 py-3 text-sm">{{ person.email }}</td>
