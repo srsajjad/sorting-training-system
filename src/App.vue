@@ -96,9 +96,10 @@
                   {{ person.potatoes }}
                 </td>
                 <td class="px-4 py-3">
-                  <span class="px-2 py-1 text-xs bg-gray-100 rounded">{{
-                    person.tags
-                  }}</span>
+                  <span
+                    class="px-4 py-1.5 text-sm text-gray-600 bg-gray-100 rounded-full"
+                    >{{ person.tags }}</span
+                  >
                 </td>
                 <td class="px-4 py-3 text-sm">{{ person.name }}</td>
                 <td class="px-4 py-3 text-sm">{{ person.location }}</td>
