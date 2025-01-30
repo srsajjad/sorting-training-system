@@ -32,75 +32,91 @@
         <div class="p-4 text-sm text-right text-gray-600 border-b">
           {{ people.length }} people in the list
         </div>
-        <table class="w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="w-10 px-4 py-3"></th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Email
-              </th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Potatoes
-              </th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Tags
-              </th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Full name
-              </th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Location
-              </th>
-              <th class="px-4 py-3 text-sm font-medium text-left text-gray-600">
-                Year
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="person in people"
-              :key="person.id"
-              :class="{
-                'bg-gray-50': isDragging,
-                'bg-blue-50': selectedPeople.has(person.id),
-              }"
-              draggable="true"
-              @dragstart="onDragStart($event, person)"
-              @dragover="onDragOver($event)"
-              @drop="onDrop($event, person)"
-              class="border-t cursor-move hover:bg-gray-50"
-            >
-              <td class="w-10 px-4 py-3">
-                <input
-                  type="checkbox"
-                  :checked="selectedPeople.has(person.id)"
-                  @change="toggleSelection(person.id)"
-                  class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
-                />
-              </td>
-              <td class="px-4 py-3 text-sm">{{ person.email }}</td>
-              <td class="px-4 py-3 text-sm font-semibold">
-                {{ person.potatoes }}
-              </td>
-              <td class="px-4 py-3">
-                <span class="px-2 py-1 text-xs bg-gray-100 rounded">{{
-                  person.tags
-                }}</span>
-              </td>
-              <td class="px-4 py-3 text-sm">{{ person.name }}</td>
-              <td class="px-4 py-3 text-sm">{{ person.location }}</td>
-              <td class="px-4 py-3 text-sm text-gray-400">{{ person.year }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[800px]">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="w-10 px-4 py-3"></th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Email
+                </th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Potatoes
+                </th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Tags
+                </th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Full name
+                </th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Location
+                </th>
+                <th
+                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
+                >
+                  Year
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="person in people"
+                :key="person.id"
+                :class="{
+                  'bg-gray-50': isDragging,
+                  'bg-blue-50': selectedPeople.has(person.id),
+                }"
+                draggable="true"
+                @dragstart="onDragStart($event, person)"
+                @dragover="onDragOver($event)"
+                @drop="onDrop($event, person)"
+                class="border-t cursor-move hover:bg-gray-50"
+              >
+                <td class="w-10 px-4 py-3">
+                  <input
+                    type="checkbox"
+                    :checked="selectedPeople.has(person.id)"
+                    @change="toggleSelection(person.id)"
+                    class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
+                  />
+                </td>
+                <td class="px-4 py-3 text-sm">{{ person.email }}</td>
+                <td class="px-4 py-3 text-sm font-semibold">
+                  {{ person.potatoes }}
+                </td>
+                <td class="px-4 py-3">
+                  <span class="px-2 py-1 text-xs bg-gray-100 rounded">{{
+                    person.tags
+                  }}</span>
+                </td>
+                <td class="px-4 py-3 text-sm">{{ person.name }}</td>
+                <td class="px-4 py-3 text-sm">{{ person.location }}</td>
+                <td class="px-4 py-3 text-sm text-gray-400">
+                  {{ person.year }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Modal -->
       <div
         v-if="showModal"
-        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+        class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
       >
-        <div class="p-6 bg-white rounded-lg w-96">
+        <div class="w-full max-w-md p-6 bg-white rounded-lg">
           <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-semibold">How many people?</h2>
             <button
