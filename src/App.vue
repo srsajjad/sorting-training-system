@@ -28,257 +28,54 @@
         </p>
       </div>
 
-      <div class="bg-white rounded-lg shadow">
-        <div class="p-4 text-sm font-bold text-right text-gray-900 border-b">
-          {{ people.length }} people in the list
-        </div>
-        <div class="overflow-x-auto">
-          <table class="w-full min-w-[800px]">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="w-10 px-4 py-3"></th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Email
-                </th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Potatoes
-                </th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Tags
-                </th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Full name
-                </th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Location
-                </th>
-                <th
-                  class="px-4 py-3 text-sm font-medium text-left text-gray-600"
-                >
-                  Year
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="person in people"
-                :key="person.id"
-                :class="{
-                  'bg-gray-50': isDragging,
-                  'bg-blue-50': selectedPeople.has(person.id),
-                }"
-                draggable="true"
-                @dragstart="onDragStart($event, person)"
-                @dragover="onDragOver($event)"
-                @drop="onDrop($event, person)"
-                class="border-t cursor-move hover:bg-gray-50"
-              >
-                <td class="w-10 px-4 py-3">
-                  <input
-                    type="checkbox"
-                    :checked="selectedPeople.has(person.id)"
-                    @change="toggleSelection(person.id)"
-                    class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
-                  />
-                </td>
-                <td class="px-4 py-3 text-sm">{{ person.email }}</td>
-                <td class="px-4 py-3 text-sm font-semibold">
-                  {{ person.potatoes }}
-                </td>
-                <td class="px-4 py-3">
-                  <span
-                    class="px-4 py-1.5 text-sm text-gray-600 bg-gray-100 rounded-full"
-                    >{{ person.tags }}</span
-                  >
-                </td>
-                <td class="px-4 py-3 text-sm">{{ person.name }}</td>
-                <td class="px-4 py-3 text-sm">{{ person.location }}</td>
-                <td class="px-4 py-3 text-sm">
-                  {{ person.year }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <SortableTable
+        :people="people"
+        :selected-people="selectedPeople"
+        @update-people="updatePeople"
+        @toggle-selection="toggleSelection"
+      />
 
-      <!-- Modal -->
-      <div
+      <StartModal
         v-if="showModal"
-        class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
-      >
-        <div class="w-full max-w-md p-6 bg-white rounded-lg">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-semibold">How many people?</h2>
-            <button
-              @click="showModal = false"
-              class="text-gray-400 hover:text-gray-600"
-            >
-              ×
-            </button>
-          </div>
-          <p class="mb-4 text-sm text-gray-600">
-            Enter a number of how many people you want to add to the list ({{
-              isTestMode ? "3" : "20"
-            }}-100):
-          </p>
-          <div class="flex items-center gap-2 mb-4">
-            <input
-              type="checkbox"
-              v-model="isTestMode"
-              class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
-            />
-            <label class="text-sm text-gray-600"
-              >Enable testing mode (allows less than 20 people)</label
-            >
-          </div>
-          <input
-            v-model="numberOfPeople"
-            type="number"
-            :min="isTestMode ? 3 : 20"
-            max="100"
-            class="w-full px-3 py-2 mb-4 border rounded"
-            :placeholder="isTestMode ? '3' : '20'"
-          />
-          <div class="flex justify-end gap-2">
-            <button
-              @click="showModal = false"
-              class="px-4 py-2 text-gray-600 bg-gray-100 rounded hover:bg-gray-200"
-            >
-              Cancel
-            </button>
-            <button
-              @click="startGame"
-              class="px-4 py-2 text-white bg-orange-500 rounded hover:bg-orange-600"
-            >
-              Start
-            </button>
-          </div>
-        </div>
-      </div>
+        @close="showModal = false"
+        @start="startGame"
+      />
 
-      <!-- Success Modal -->
-      <div
+      <SuccessModal
         v-if="showSuccessModal"
-        class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
-        style="z-index: 999"
-      >
-        <div
-          class="w-full max-w-md p-8 transform bg-white rounded-lg shadow-xl animate-bounce-once"
-        >
-          <div class="text-center">
-            <div class="mb-4 text-6xl">🏆</div>
-            <h2 class="mb-2 text-3xl font-bold text-gray-900">Outstanding!</h2>
-            <p class="mb-6 text-lg text-gray-600">
-              You've mastered the art of potato sorting!
-              <br />
-              Time: {{ formatTime(timer) }}
-            </p>
-            <div class="space-y-4">
-              <div class="p-4 rounded-lg bg-orange-50">
-                <p class="font-medium text-orange-700">
-                  "In Potatostan, efficiency is next to godliness!"
-                </p>
-              </div>
-              <button
-                @click="showSuccessModal = false"
-                class="px-6 py-3 text-white transition-colors bg-orange-500 rounded-lg hover:bg-orange-600"
-              >
-                Continue Training
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        :time="timer"
+        @close="showSuccessModal = false"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-import confetti from "canvas-confetti";
+import {
+  generateRandomEmail,
+  generateRandomName,
+  generateUniqueNumbers,
+} from "./utils/generators";
+import { formatTime } from "./utils/formatters";
+import { useConfetti } from "./composables/useConfetti";
+import SortableTable from "./components/SortableTable.vue";
+import StartModal from "./components/StartModal.vue";
+import SuccessModal from "./components/SuccessModal.vue";
 
 const showModal = ref(false);
 const showSuccessModal = ref(false);
-const numberOfPeople = ref(20);
 const people = ref([]);
 const timer = ref(0);
 const timerInterval = ref(null);
 const isGameStarted = ref(false);
 const showSuccess = ref(false);
-const isDragging = ref(false);
 const selectedPeople = ref(new Set());
-const isTestMode = ref(false);
+const { triggerConfetti } = useConfetti();
 
-// Generate random data
-function generateRandomEmail() {
-  const names = [
-    "john",
-    "jane",
-    "bob",
-    "alice",
-    "peter",
-    "mary",
-    "james",
-    "sarah",
-  ];
-  const domains = ["gmail.com", "yahoo.com", "hotmail.com", "potatostan.gov"];
-  const name = names[Math.floor(Math.random() * names.length)];
-  const domain = domains[Math.floor(Math.random() * domains.length)];
-  return `${name}${Math.floor(Math.random() * 1000)}@${domain}`;
-}
-
-function generateRandomName() {
-  const firstNames = [
-    "Ivan",
-    "Boris",
-    "Natasha",
-    "Vladimir",
-    "Olga",
-    "Dmitri",
-    "Anna",
-    "Mikhail",
-  ];
-  const lastNames = [
-    "Potatov",
-    "Spudnik",
-    "Tuberov",
-    "Yamnaya",
-    "Rootski",
-    "Soilovich",
-  ];
-  return `${firstNames[Math.floor(Math.random() * firstNames.length)]} ${
-    lastNames[Math.floor(Math.random() * lastNames.length)]
-  }`;
-}
-
-function generateUniqueNumbers(count) {
-  const numbers = new Set();
-  while (numbers.size < count) {
-    numbers.add(Math.floor(Math.random() * 1000) + 1);
-  }
-  return Array.from(numbers);
-}
-
-function startGame() {
-  const minPeople = isTestMode.value ? 3 : 20;
-  if (numberOfPeople.value < minPeople || numberOfPeople.value > 100) {
-    alert(`Please enter a number between ${minPeople} and 100`);
-    return;
-  }
-
-  const potatoCounts = generateUniqueNumbers(numberOfPeople.value);
-  people.value = Array.from({ length: numberOfPeople.value }, (_, index) => ({
+function startGame(numberOfPeople) {
+  const potatoCounts = generateUniqueNumbers(numberOfPeople);
+  people.value = Array.from({ length: numberOfPeople }, (_, index) => ({
     id: index + 1,
     email: generateRandomEmail(),
     potatoes: potatoCounts[index],
@@ -299,53 +96,17 @@ function startGame() {
   }, 1000);
 }
 
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
+function updatePeople(newPeople) {
+  people.value = newPeople;
+  checkSorting();
 }
 
-function triggerConfetti() {
-  const count = 200;
-  const defaults = {
-    origin: { y: 0.7 },
-    zIndex: 1000,
-  };
-
-  function fire(particleRatio, opts) {
-    confetti({
-      ...defaults,
-      ...opts,
-      particleCount: Math.floor(count * particleRatio),
-    });
+function toggleSelection(personId) {
+  if (selectedPeople.value.has(personId)) {
+    selectedPeople.value.delete(personId);
+  } else {
+    selectedPeople.value.add(personId);
   }
-
-  fire(0.25, {
-    spread: 26,
-    startVelocity: 55,
-  });
-
-  fire(0.2, {
-    spread: 60,
-  });
-
-  fire(0.35, {
-    spread: 100,
-    decay: 0.91,
-    scalar: 0.8,
-  });
-
-  fire(0.1, {
-    spread: 120,
-    startVelocity: 25,
-    decay: 0.92,
-    scalar: 1.2,
-  });
-
-  fire(0.1, {
-    spread: 120,
-    startVelocity: 45,
-  });
 }
 
 function checkSorting() {
@@ -361,41 +122,6 @@ function checkSorting() {
     showSuccess.value = true;
     showSuccessModal.value = true;
     triggerConfetti();
-  }
-}
-
-// Drag and drop handlers
-function onDragStart(e, person) {
-  isDragging.value = true;
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("personId", person.id);
-}
-
-function onDragOver(e) {
-  e.preventDefault();
-}
-
-function onDrop(e, targetPerson) {
-  e.preventDefault();
-  isDragging.value = false;
-
-  const personId = parseInt(e.dataTransfer.getData("personId"));
-  const draggedPersonIndex = people.value.findIndex((p) => p.id === personId);
-  const targetIndex = people.value.findIndex((p) => p.id === targetPerson.id);
-
-  if (draggedPersonIndex === -1 || targetIndex === -1) return;
-
-  const [draggedPerson] = people.value.splice(draggedPersonIndex, 1);
-  people.value.splice(targetIndex, 0, draggedPerson);
-
-  checkSorting();
-}
-
-function toggleSelection(personId) {
-  if (selectedPeople.value.has(personId)) {
-    selectedPeople.value.delete(personId);
-  } else {
-    selectedPeople.value.add(personId);
   }
 }
 
