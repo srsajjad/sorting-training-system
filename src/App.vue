@@ -29,7 +29,7 @@
       </div>
 
       <div class="bg-white rounded-lg shadow">
-        <div class="p-4 text-sm text-right text-gray-600 border-b">
+        <div class="p-4 text-sm font-bold text-right text-gray-900 border-b">
           {{ people.length }} people in the list
         </div>
         <div class="overflow-x-auto">
@@ -103,7 +103,7 @@
                 </td>
                 <td class="px-4 py-3 text-sm">{{ person.name }}</td>
                 <td class="px-4 py-3 text-sm">{{ person.location }}</td>
-                <td class="px-4 py-3 text-sm text-gray-400">
+                <td class="px-4 py-3 text-sm">
                   {{ person.year }}
                 </td>
               </tr>
@@ -413,6 +413,35 @@ function resetGame() {
 </script>
 
 <style>
+/* Existing styles */
+
+/* Add Roboto font to the entire app */
+:root {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-variation-settings: "wdth" 100;
+}
+
+/* Specific font weights for different elements */
+h1,
+h2 {
+  font-weight: 700;
+}
+
+.text-sm {
+  font-weight: 400;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+/* Rest of existing styles */
+
 input[type="checkbox"] {
   appearance: none;
   background-color: #fff;
