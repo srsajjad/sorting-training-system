@@ -127,16 +127,27 @@
             </button>
           </div>
           <p class="mb-4 text-sm text-gray-600">
-            Enter a number of how many people you want to add to the list
-            (20-100):
+            Enter a number of how many people you want to add to the list ({{
+              isTestMode ? "3" : "20"
+            }}-100):
           </p>
+          <div class="flex items-center gap-2 mb-4">
+            <input
+              type="checkbox"
+              v-model="isTestMode"
+              class="w-4 h-4 border-gray-300 rounded focus:ring-orange-500"
+            />
+            <label class="text-sm text-gray-600"
+              >Enable testing mode (allows less than 20 people)</label
+            >
+          </div>
           <input
             v-model="numberOfPeople"
             type="number"
-            min="20"
+            :min="isTestMode ? 3 : 20"
             max="100"
             class="w-full px-3 py-2 mb-4 border rounded"
-            placeholder="20"
+            :placeholder="isTestMode ? '3' : '20'"
           />
           <div class="flex justify-end gap-2">
             <button
@@ -154,14 +165,50 @@
           </div>
         </div>
       </div>
+
+      <!-- Success Modal -->
+      <div
+        v-if="showSuccessModal"
+        class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
+        style="z-index: 999"
+      >
+        <div
+          class="w-full max-w-md p-8 transform bg-white rounded-lg shadow-xl animate-bounce-once"
+        >
+          <div class="text-center">
+            <div class="mb-4 text-6xl">🏆</div>
+            <h2 class="mb-2 text-3xl font-bold text-gray-900">Outstanding!</h2>
+            <p class="mb-6 text-lg text-gray-600">
+              You've mastered the art of potato sorting!
+              <br />
+              Time: {{ formatTime(timer) }}
+            </p>
+            <div class="space-y-4">
+              <div class="p-4 rounded-lg bg-orange-50">
+                <p class="font-medium text-orange-700">
+                  "In Potatostan, efficiency is next to godliness!"
+                </p>
+              </div>
+              <button
+                @click="showSuccessModal = false"
+                class="px-6 py-3 text-white transition-colors bg-orange-500 rounded-lg hover:bg-orange-600"
+              >
+                Continue Training
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import confetti from "canvas-confetti";
 
 const showModal = ref(false);
+const showSuccessModal = ref(false);
 const numberOfPeople = ref(20);
 const people = ref([]);
 const timer = ref(0);
@@ -170,6 +217,7 @@ const isGameStarted = ref(false);
 const showSuccess = ref(false);
 const isDragging = ref(false);
 const selectedPeople = ref(new Set());
+const isTestMode = ref(false);
 
 // Generate random data
 function generateRandomEmail() {
@@ -222,8 +270,9 @@ function generateUniqueNumbers(count) {
 }
 
 function startGame() {
-  if (numberOfPeople.value < 20 || numberOfPeople.value > 100) {
-    alert("Please enter a number between 20 and 100");
+  const minPeople = isTestMode.value ? 3 : 20;
+  if (numberOfPeople.value < minPeople || numberOfPeople.value > 100) {
+    alert(`Please enter a number between ${minPeople} and 100`);
     return;
   }
 
@@ -255,6 +304,49 @@ function formatTime(seconds) {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+function triggerConfetti() {
+  const count = 200;
+  const defaults = {
+    origin: { y: 0.7 },
+    zIndex: 1000,
+  };
+
+  function fire(particleRatio, opts) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio),
+    });
+  }
+
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+
+  fire(0.2, {
+    spread: 60,
+  });
+
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
+}
+
 function checkSorting() {
   const sortedPotatoes = [...people.value].sort(
     (a, b) => b.potatoes - a.potatoes
@@ -266,6 +358,8 @@ function checkSorting() {
   if (isCorrect) {
     clearInterval(timerInterval.value);
     showSuccess.value = true;
+    showSuccessModal.value = true;
+    triggerConfetti();
   }
 }
 
@@ -308,6 +402,7 @@ function resetGame() {
   people.value = [];
   isGameStarted.value = false;
   showSuccess.value = false;
+  showSuccessModal.value = false;
   timer.value = 0;
   selectedPeople.value.clear();
   if (timerInterval.value) {
@@ -340,5 +435,19 @@ input[type="checkbox"]:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
   box-shadow: 0 0 0 2px #fff, 0 0 0 4px #f97316;
+}
+
+@keyframes bounce-once {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25px);
+  }
+}
+
+.animate-bounce-once {
+  animation: bounce-once 1s ease-in-out;
 }
 </style>
